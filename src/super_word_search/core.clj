@@ -85,4 +85,4 @@
 
 (defn -main [& args]
   (let [board (parse-input (line-seq (java.io.BufferedReader. *in*)))]
-    (map #(solve-word %1 board) (board :search-terms))))
+    (println (apply str (interpose \newline (map #(solve-word %1 board) (board :search-terms)))))))
