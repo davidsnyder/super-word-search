@@ -2,7 +2,7 @@
   (use [clojure.contrib.seq-utils :only [indexed]]))
 
 ;; 8 direction vectors, up, down, up-right, down-left, etc.
-(def dirs {:l [0,-1] :r [0,1] :d [1,0] :u [-1,0] :ul [-1,-1] :ur [-1,1] :dl [1,-1] :dr [1,1]})
+(def dirs {:l '(0,-1) :r '(0,1) :d '(1,0) :u '(-1,0) :ul '(-1,-1) :ur '(-1,1) :dl '(1,-1) :dr '(1,1)})
 
 ;; ======= HELPER FUNCS ==========
 
