@@ -45,7 +45,8 @@
 
 ;; Map of coordinate lists for each letter in word search grid
 ;; (letter-coord-table 'D) => ((1 0) (0 2))
-(defn letter-coord-table [grid] (pairs-to-map (seq-pairs grid))) ;; FIXME: memoize
+(defn letter-coord-table [grid] (pairs-to-map (seq-pairs grid))) 
+(def letter-coord-memo (memoize letter-coord-table))
 
 ;; ============= SOLVE ===============
 
@@ -61,7 +62,7 @@
                                         (first word))) ;the letter in this direction matches the next letter of word
                               (recur (rest word),wrapped-coord,dir,board) ;continue searching in direction @dir@ for the rest of the letters
                               false)))))) ; step was not valid
-                  (for [coord ((letter-coord-table (board :grid)) (first word)), dir (vals dirs)] [coord dir]))) ;enumeration of 8 directions from each start-coord
+                  (for [coord ((letter-coord-memo (board :grid)) (first word)), dir (vals dirs)] [coord dir]))) ;enumeration of 8 directions from each start-coord
       "NOT FOUND"))
 
 ;; ========== MAIN =========
