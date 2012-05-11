@@ -33,7 +33,6 @@
 
 ;; Builds a map from a seq of [k v] pairs.  Values are appended to a list to
 ;; allow for duplicate key entries in @seq-pairs
-;;{I ([2 2]), H ([2 1]), G ([2 0]), F ([1 2]), E ([1 1]), D ([1 0] [0 2]), B ([0 1]), A ([0 0])}
 (defn pairs-to-map [seq-pairs] (reduce (fn [m [k v]] (assoc m k (conj (m k) v))) {} seq-pairs))
 
 ;; Map of coordinate lists for each letter in word search grid
