@@ -83,4 +83,8 @@
 
 (defn -main [& args]
   (let [board (parse-input (line-seq (java.io.BufferedReader. *in*)))]
-    (println (apply str (interpose \newline (map #(solve-word %1 board) (board :search-terms)))))))
+    (doseq [result (map #(solve-word %1 board) (board :search-terms))]
+      (if (= result "NOT FOUND")
+        (printf "NOT FOUND\n")
+        (apply printf "(%d,%d) (%d,%d)\n" (flatten result))
+    ))))
