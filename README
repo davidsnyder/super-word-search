@@ -4,7 +4,7 @@
 
 2. Run Unit Tests: `lein test` 
 
-3. Run Example: `lein trampoline run < test/super_word_search/test/input2.txt`
+3. Run Example: `lein run test/super_word_search/test/input2.txt`
 
       (1,2) (1,0)
       (0,2) (0,1)

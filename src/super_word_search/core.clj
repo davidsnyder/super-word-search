@@ -76,8 +76,10 @@
           input))
 
 (defn -main [& args]
-  (let [board (parse-input (line-seq (java.io.BufferedReader. *in*)))]
-    (doseq [result (map #(solve-word %1 board) (board :search-terms))]
-      (if (= result "NOT FOUND")
-        (printf "NOT FOUND\n")
-        (apply printf "(%d,%d) (%d,%d)\n" (flatten result))))))
+  (when-not (empty? args)
+    (with-open [rdr (java.io.BufferedReader. (java.io.FileReader. (first args)))]
+      (let [board (parse-input (line-seq rdr))]
+        (doseq [result (map #(solve-word %1 board) (board :search-terms))]
+          (if (= result "NOT FOUND")
+            (printf "NOT FOUND\n")
+            (apply printf "(%d,%d) (%d,%d)\n" (flatten result))))))))
