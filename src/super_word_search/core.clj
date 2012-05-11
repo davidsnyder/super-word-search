@@ -43,18 +43,19 @@
 ;; ============= SOLVE ===============
 
 (defn solve-word [word board]
-  (or (reduce (fn [b a] (or b a)) false (map (fn [[coord dir]] ;map is lazy, so first will stop at the first solution
-                    (let [start-coord coord] ;hold on to the coord of the first letter
-                      (loop [word (rest word), cur-coord coord, dir dir, board board]
-                        (if (and (empty? word) (not= start-coord cur-coord)) ; base case: we're out of letters and we haven't overlapped start-coord
-                          [start-coord cur-coord] ; yield solution
-                          (let [wrapped-coord (try-wrap (add-coords cur-coord dir) (board :n) (board :m) (board :wrap-mode))] ;else take a step in the direction of @dir@
-                            (if (and wrapped-coord  ;step is valid
-                                     (= (get-element wrapped-coord (board :grid))
-                                        (first word))) ;the letter in this direction matches the next letter of word
-                              (recur (rest word),wrapped-coord,dir,board) ;continue searching in direction @dir@ for the rest of the letters
-                              false)))))) ; step was not valid
-                  (for [coord ((letter-coord-memo (board :grid)) (first word)), dir (vals dirs)] [coord dir]))) ;enumeration of 8 directions from each start-coord
+  (or (reduce (fn [b a] (or b a)) false 
+              (map (fn [[coord dir]] ;map is lazy, so first will stop at the first solution
+                     (let [start-coord coord] ;hold on to the coord of the first letter
+                       (loop [word (rest word), cur-coord coord, dir dir, board board]
+                         (if (and (empty? word) (not= start-coord cur-coord)) ; base case: we're out of letters and we haven't overlapped start-coord
+                           [start-coord cur-coord] ; yield solution
+                           (let [wrapped-coord (try-wrap (add-coords cur-coord dir) (board :n) (board :m) (board :wrap-mode))] ;else take a step in the direction of @dir@
+                             (if (and wrapped-coord  ;step is valid
+                                      (= (get-element wrapped-coord (board :grid))
+                                         (first word))) ;the letter in this direction matches the next letter of word
+                               (recur (rest word),wrapped-coord,dir,board) ;continue searching in direction @dir@ for the rest of the letters
+                               false)))))) ; step was not valid
+                   (for [coord ((letter-coord-memo (board :grid)) (first word)), dir (vals dirs)] [coord dir]))) ;enumeration of 8 directions from each start-coord
       "NOT FOUND"))
 
 ;; ========== MAIN =========
@@ -79,5 +80,4 @@
     (doseq [result (map #(solve-word %1 board) (board :search-terms))]
       (if (= result "NOT FOUND")
         (printf "NOT FOUND\n")
-        (apply printf "(%d,%d) (%d,%d)\n" (flatten result))
-    ))))
+        (apply printf "(%d,%d) (%d,%d)\n" (flatten result))))))
