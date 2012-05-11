@@ -2,7 +2,7 @@
   (:use [super-word-search.core])
   (:use [clojure.test]))
 
-(def test-board {:wrap-mode true, :n 3, :m 3, :grid ["ABC" "DEF" "GHI"], :search-terms ["FED" "CAB" "GAD" "BID" "HIGH"]})
+
 
 (deftest add-coords1 
   (is (= (add-coords '(0 2) '(-1 1)) '(-1 3))))
@@ -65,4 +65,23 @@
                                                    \d '(4)})))
 
 
-  
+(deftest parse-input1
+  (is (= (parse-input (line-seq (java.io.BufferedReader. (java.io.StringReader. "3 3\nABC\nDEF\nGHI\nWRAP\n5\nFED\nCAB\nGAD\nBID\nHIGH\n"))))
+         {:tc 0, :grid-count 0, :wrap-mode true, :n 3, :m 3, :grid ["ABC" "DEF" "GHI"], :search-terms ["FED" "CAB" "GAD" "BID" "HIGH"]})))
+
+(deftest parse-input2
+  (is (= (parse-input (line-seq (java.io.BufferedReader. (java.io.StringReader. "1 3\nABC\nNO_WRAP\n1\nCAB\n"))))
+         {:tc 0, :grid-count 0, :wrap-mode false, :n 1, :m 3, :grid ["ABC"], :search-terms ["CAB"]})))
+
+
+(def test-board {:wrap-mode true, :n 3, :m 3, :grid ["ABC" "DEF" "GHI"], :search-terms ["FED" "CAB" "GAD" "BID" "HIGH"]})
+
+(deftest solve-word1
+  (is (= (solve-word "FED" test-board) [[1 2] '(1 0)])))
+
+(deftest solve-word2
+  (is (= (solve-word "CAB" test-board) [[0 2] '(0 1)])))
+
+(deftest solve-word3
+  (is (= (solve-word "HIGH" test-board) "NOT FOUND")))
+
