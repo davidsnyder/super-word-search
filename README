@@ -1,7 +1,13 @@
 # super-word-search
 
-FIXME: write
+1. Install Dependencies: `lein deps`
 
-## Usage
+2. Run Unit Tests: `lein test` 
 
-FIXME: write
+3. Run Example: `lein trampoline run < test/super_word_search/test/input2.txt`
+
+      (1,2) (1,0)
+      (0,2) (0,1)
+      (2,0) (1,0)
+      (0,1) (1,0)
+      NOT FOUND

@@ -2,8 +2,6 @@
   (:use [super-word-search.core])
   (:use [clojure.test]))
 
-
-
 (deftest add-coords1 
   (is (= (add-coords '(0 2) '(-1 1)) '(-1 3))))
 
