@@ -35,7 +35,7 @@
 ;; Runs in O(NxM) where N is # rows and M is # columns in @grid@
 (defn seq-pairs [grid]
   (map (fn [[row col val]] [val [row col]]) 
-       (apply concat (map (fn [[idx val]] (map #(conj (seq %1) idx) (indexed val)))
+       (apply concat (map (fn [[idx row]] (map #(conj (seq %1) idx) (indexed row)))
                           (indexed grid)))))
 
 ;; Builds a map from a seq of [k v] pairs.  Values are appended to a list to
@@ -50,21 +50,19 @@
 ;; ============= SOLVE ===============
 
 (defn solve-word [word board]
-  (or (first (filter (fn [[coord dir]] ;filter is lazy, so first will stop at the first solution
-                       (let [start-coord coord] ;hold on to the coord of the first letter
-                         (loop [word (rest word), cur-coord coord, dir dir, board board] 
-                           (if (and (empty? word) (not= start-coord cur-coord)) ; base case: we're out of letters and we haven't overlapped start-coord
-                             [start-coord cur-coord] ; yield solution
-                             (let [wrapped-coord (try-wrap (add-coords cur-coord dir) board)] ;take a step in the direction of @dir@                               
-                               (if (and wrapped-coord  ;step is valid
-                                        (= (get-element wrapped-coord (board :grid))
-                                                        (first word))) ;the letter in this
-                                        ;direction matches the next letter
-                                        ;of word
-                                        (recur (rest word),wrapped-coord,dir,board) ;continue searching in direction @dir@ for the rest of the letters
-                                        false)))))) ; step was not valid
-                       (for [coord ((letter-coord-table (board :grid)) (first word)), dir (vals dirs)] [coord dir]))) ;enumeration of 8 directions from each start-coord
-             "NOT FOUND"))
+  (or (reduce (fn [b a] (or b a)) false (map (fn [[coord dir]] ;map is lazy, so first will stop at the first solution
+                    (let [start-coord coord] ;hold on to the coord of the first letter
+                      (loop [word (rest word), cur-coord coord, dir dir, board board]
+                        (if (and (empty? word) (not= start-coord cur-coord)) ; base case: we're out of letters and we haven't overlapped start-coord
+                          [start-coord cur-coord] ; yield solution
+                          (let [wrapped-coord (try-wrap (add-coords cur-coord dir) board)] ;else take a step in the direction of @dir@
+                            (if (and wrapped-coord  ;step is valid
+                                     (= (get-element wrapped-coord (board :grid))
+                                        (first word))) ;the letter in this direction matches the next letter of word
+                              (recur (rest word),wrapped-coord,dir,board) ;continue searching in direction @dir@ for the rest of the letters
+                              false)))))) ; step was not valid
+                  (for [coord ((letter-coord-table (board :grid)) (first word)), dir (vals dirs)] [coord dir]))) ;enumeration of 8 directions from each start-coord
+      "NOT FOUND"))
 
 ;; ========== MAIN =========
 
@@ -85,4 +83,4 @@
 
 (defn -main [& args]
   (let [board (parse-input (line-seq (java.io.BufferedReader. *in*)))]
-    (println (apply str (interpose \newline (map #(interspose ' ' (solve-word %1 board)) (board :search-terms)))))))
+    (println (apply str (interpose \newline (map #(solve-word %1 board) (board :search-terms)))))))
